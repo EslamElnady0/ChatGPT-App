@@ -30,7 +30,7 @@ class ChatWidget extends StatelessWidget {
                 const SizedBox(
                   width: 8,
                 ),
-                Expanded(child: TextWidget(label: msg)),
+                Expanded(child: TextWidget(fontSize:16,label: msg)),
                 chatIndex ==1? Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   mainAxisSize: MainAxisSize.min,

@@ -1,4 +1,5 @@
 import 'package:chatgpt/constants/constants.dart';
+import 'package:chatgpt/services/api_services.dart';
 import 'package:chatgpt/services/assets_manager.dart';
 import 'package:chatgpt/services/service.dart';
 import 'package:chatgpt/widgets/chat_widget.dart';
@@ -57,6 +58,7 @@ class _ChatScreenState extends State<ChatScreen> {
               child: ListView.builder(
                 itemBuilder: (context, index) {
                   return ChatWidget(
+
                     chatIndex:
                         int.parse(chatMessages[index]["chatIndex"].toString()),
                     msg: chatMessages[index]["msg"].toString(),
@@ -87,7 +89,9 @@ class _ChatScreenState extends State<ChatScreen> {
                           textEditingController: textEditingController),
                     ),
                     IconButton(
-                        onPressed: () {},
+                        onPressed: () async{
+                          await ApiServices.getModels();
+                        },
                         icon: const Icon(
                           Icons.send,
                           color: Colors.white,
