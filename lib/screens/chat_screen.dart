@@ -1,5 +1,6 @@
 import 'package:chatgpt/constants/constants.dart';
 import 'package:chatgpt/services/assets_manager.dart';
+import 'package:chatgpt/services/service.dart';
 import 'package:chatgpt/widgets/chat_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -44,7 +45,9 @@ class _ChatScreenState extends State<ChatScreen> {
           style: TextStyle(fontSize: 22),
         ),
         actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.more_vert))
+          IconButton(onPressed: () async{
+           await Services.showBottomSheet(context);
+          }, icon: const Icon(Icons.more_vert))
         ],
       ),
       body: SafeArea(
@@ -62,13 +65,16 @@ class _ChatScreenState extends State<ChatScreen> {
                 itemCount: chatMessages.length,
               ),
             ),
+            const SizedBox(
+              height: 10,
+            ),
             if (_isTyping) ...[
               const SpinKitThreeBounce(
                 color: Colors.white,
                 size: 18,
               ),
               const SizedBox(
-                height: 15,
+                height: 10,
               ),
               Container(
                 color: kCardColor,
