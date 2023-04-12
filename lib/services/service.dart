@@ -26,18 +26,18 @@ class Services {
         });
   }
 
- static List<DropdownMenuItem<Object?>>? get getModelsItem {
-    List<DropdownMenuItem<Object?>>? modelsItems =
-        List<DropdownMenuItem<Object?>>.generate(
-            models.length,
-            (index) => DropdownMenuItem(
-
-              value: models[index],
-                    child: TextWidget(
-                  label: models[index],
-                  fontSize: 15,
-                )));
-
-    return modelsItems;
-  }
+ // static List<DropdownMenuItem<Object?>>? get getModelsItem {
+ //    List<DropdownMenuItem<Object?>>? modelsItems =
+ //        List<DropdownMenuItem<Object?>>.generate(
+ //            models.length,
+ //            (index) => DropdownMenuItem(
+ //
+ //              value: models[index],
+ //                    child: TextWidget(
+ //                  label: models[index],
+ //                  fontSize: 15,
+ //                )));
+ //
+ //    return modelsItems;
+ //  }
 }
