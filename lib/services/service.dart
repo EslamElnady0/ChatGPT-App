@@ -5,7 +5,7 @@ import '../widgets/text_widget.dart';
 
 class Services{
 
-  static Future<void> showBottomSheet(BuildContext context) async{
+  static Future<void> showBottomSheet({required BuildContext context}) async{
 
     await showModalBottomSheet(
         shape:const RoundedRectangleBorder(

@@ -3,7 +3,7 @@ import 'package:chatgpt/screens/chat_screen.dart';
 import 'package:flutter/material.dart';
 
 main(){
-  runApp(ChatGPT());
+  runApp(const ChatGPT());
 }
 
 class ChatGPT extends StatelessWidget {
