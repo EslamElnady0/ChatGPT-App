@@ -1,5 +1,6 @@
 import 'package:chatgpt/constants/constants.dart';
 import 'package:chatgpt/services/assets_manager.dart';
+import 'package:chatgpt/widgets/chat_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
@@ -13,7 +14,7 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  bool _isTyping = true;
+  final bool _isTyping = true;
 
   late TextEditingController textEditingController;
 
@@ -52,7 +53,7 @@ class _ChatScreenState extends State<ChatScreen> {
             Flexible(
               child: ListView.builder(
                 itemBuilder: (context, index) {
-                  return Text("sdjkfgksjdhfksdjf");
+                  return const  ChatWidget();
                 },
                 itemCount: 6,
               ),
