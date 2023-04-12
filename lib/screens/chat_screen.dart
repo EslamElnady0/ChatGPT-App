@@ -46,7 +46,7 @@ class _ChatScreenState extends State<ChatScreen> {
         ),
         actions: [
           IconButton(onPressed: () async{
-           await Services.showBottomSheet(context);
+           await Services.showBottomSheet(context: context);
           }, icon: const Icon(Icons.more_vert))
         ],
       ),
