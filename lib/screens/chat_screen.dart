@@ -65,10 +65,11 @@ class _ChatScreenState extends State<ChatScreen> {
                 itemCount: chatMessages.length,
               ),
             ),
-            const SizedBox(
-              height: 10,
-            ),
+
             if (_isTyping) ...[
+              const SizedBox(
+                height: 10,
+              ),
               const SpinKitThreeBounce(
                 color: Colors.white,
                 size: 18,
