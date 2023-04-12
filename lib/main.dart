@@ -1,3 +1,5 @@
+import 'package:chatgpt/constants/constants.dart';
+import 'package:chatgpt/screens/chat_screen.dart';
 import 'package:flutter/material.dart';
 
 main(){
@@ -10,7 +12,13 @@ class ChatGPT extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-
+    debugShowCheckedModeBanner: false,
+  theme: ThemeData(
+    scaffoldBackgroundColor: kScaffoldBackgroundColor,
+    appBarTheme: const AppBarTheme(color: kCardColor,
+  ),
+    ),
+    home: const ChatScreen(),
     );
   }
 }
