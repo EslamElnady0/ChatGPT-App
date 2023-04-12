@@ -53,9 +53,13 @@ class _ChatScreenState extends State<ChatScreen> {
             Flexible(
               child: ListView.builder(
                 itemBuilder: (context, index) {
-                  return const  ChatWidget();
+                  return ChatWidget(
+                    chatIndex:
+                        int.parse(chatMessages[index]["chatIndex"].toString()),
+                    msg: chatMessages[index]["msg"].toString(),
+                  );
                 },
-                itemCount: 6,
+                itemCount: chatMessages.length,
               ),
             ),
             if (_isTyping) ...[
@@ -72,7 +76,8 @@ class _ChatScreenState extends State<ChatScreen> {
                   padding: const EdgeInsets.all(8.0),
                   child: Row(children: [
                     Expanded(
-                      child: ChatTextField(textEditingController: textEditingController),
+                      child: ChatTextField(
+                          textEditingController: textEditingController),
                     ),
                     IconButton(
                         onPressed: () {},
@@ -90,4 +95,3 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 }
-
