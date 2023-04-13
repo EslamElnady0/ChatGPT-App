@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 import '../models/models_model.dart';
 
 class ModelsProvider with ChangeNotifier {
-  String _currentModel = "babbage";
+  String currentModel = "gpt-3.5-turbo";
 
   String get getCurrentModel {
-    return _currentModel;
+    return currentModel;
   }
 
   void setCurrentModel(String newModel) {
-    _currentModel = newModel;
+    currentModel = newModel;
     notifyListeners();
   }
 

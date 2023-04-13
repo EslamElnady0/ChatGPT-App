@@ -12,6 +12,7 @@ class ChatTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextField(
+
       onSubmitted: (value) {},
       controller: textEditingController,
       style: const TextStyle(color: Colors.white),
