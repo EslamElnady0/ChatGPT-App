@@ -22,7 +22,7 @@ class ApiServices {
       }
       return ModelsModel.modelsFromSnapshot(temp);
     } catch (err) {
-      print('error $err');
+      log('error $err');
       rethrow;
     }
   }

@@ -35,7 +35,7 @@ class ChatWidget extends StatelessWidget {
                     child: chatIndex == 0
                         ? TextWidget(fontSize: 16, label: msg)
                         : AnimatedTextKit(
-                      totalRepeatCount: 1,
+                      totalRepeatCount: 0,
                       displayFullTextOnTap: true,
                       repeatForever: false,
                             isRepeatingAnimation: false,
