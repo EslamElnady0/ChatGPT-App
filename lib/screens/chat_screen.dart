@@ -1,10 +1,9 @@
 import 'dart:developer';
 
 import 'package:chatgpt/constants/constants.dart';
-import 'package:chatgpt/models/chat_model.dart';
+import 'package:chatgpt/providers/chat_provider.dart';
 import 'package:chatgpt/providers/models_provider.dart';
-import 'package:chatgpt/services/api_services.dart';
-import 'package:chatgpt/services/assets_manager.dart';
+  import 'package:chatgpt/services/assets_manager.dart';
 import 'package:chatgpt/services/service.dart';
 import 'package:chatgpt/widgets/chat_widget.dart';
 import 'package:flutter/material.dart';
@@ -43,11 +42,12 @@ class _ChatScreenState extends State<ChatScreen> {
     super.dispose();
   }
 
-  List<ChatModel> chatList = [];
+  // List<ChatModel> chatList = [];
 
   @override
   Widget build(BuildContext context) {
     final modelsProvider = Provider.of<ModelsProvider>(context);
+    final chatProvider = Provider.of<ChatProvider>(context);
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
@@ -79,11 +79,11 @@ class _ChatScreenState extends State<ChatScreen> {
                   controller: _listScrollController,
                   itemBuilder: (context, index) {
                     return ChatWidget(
-                      chatIndex: chatList[index].chatId,
-                      msg: chatList[index].msg,
+                      chatIndex: chatProvider.getChatList[index].chatId,
+                      msg: chatProvider.getChatList[index].msg,
                     );
                   },
-                  itemCount: chatList.length,
+                  itemCount: chatProvider.getChatList.length,
                 ),
               ),
               if (_isTyping) ...[
@@ -112,16 +112,18 @@ class _ChatScreenState extends State<ChatScreen> {
                         child: ChatTextField(
                             focusNode: focusNode,
                             onSubmitted: (value) async {
-                              sendMessageToChat(modelsProvider: modelsProvider);
-                              FocusScope.of(context).unfocus();
+                            await  sendMessageToChat(
+                                  modelsProvider: modelsProvider,
+                                  chatProvider: chatProvider);
+
                             },
                             textEditingController: textEditingController),
                       ),
                       IconButton(
                           onPressed: () async {
                             await sendMessageToChat(
+                                chatProvider: chatProvider,
                                 modelsProvider: modelsProvider);
-                            FocusScope.of(context).unfocus();
                           },
                           icon: const Icon(
                             Icons.send,
@@ -141,22 +143,28 @@ class _ChatScreenState extends State<ChatScreen> {
   void scrollListToEnd() {
     _listScrollController.animateTo(
         _listScrollController.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 500), curve: Curves.easeOut);
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeOut);
   }
 
   Future<void> sendMessageToChat(
-      {required ModelsProvider modelsProvider}) async {
+      {required ModelsProvider modelsProvider,
+      required ChatProvider chatProvider}) async {
     try {
       setState(() {
         _isTyping = true;
-        chatList.add(ChatModel(msg: textEditingController.text, chatId: 0));
+        chatProvider.addUserMessages(msg: textEditingController.text);
+        //chatList.add(ChatModel(msg: textEditingController.text, chatId: 0));
         textEditingController.clear();
         focusNode.unfocus();
       });
 
-      chatList.addAll(await ApiServices.sendMessage(
-          chatModel: modelsProvider.getCurrentModel,
-          msg: textEditingController.text));
+     await chatProvider.addChatGPTAsnwers(
+          msg: textEditingController.text,
+          chosenModel: modelsProvider.getCurrentModel);
+      // chatList.addAll(await ApiServices.sendMessage(
+      //     chatModel: modelsProvider.getCurrentModel,
+      //     msg: textEditingController.text));
       setState(() {});
     } catch (err) {
       log(err.toString());
