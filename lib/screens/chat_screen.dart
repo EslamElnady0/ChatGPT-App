@@ -1,11 +1,10 @@
-import 'dart:developer';
-
 import 'package:chatgpt/constants/constants.dart';
 import 'package:chatgpt/providers/chat_provider.dart';
 import 'package:chatgpt/providers/models_provider.dart';
-  import 'package:chatgpt/services/assets_manager.dart';
+import 'package:chatgpt/services/assets_manager.dart';
 import 'package:chatgpt/services/service.dart';
 import 'package:chatgpt/widgets/chat_widget.dart';
+import 'package:chatgpt/widgets/text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
@@ -112,10 +111,9 @@ class _ChatScreenState extends State<ChatScreen> {
                         child: ChatTextField(
                             focusNode: focusNode,
                             onSubmitted: (value) async {
-                            await  sendMessageToChat(
+                              await sendMessageToChat(
                                   modelsProvider: modelsProvider,
                                   chatProvider: chatProvider);
-
                             },
                             textEditingController: textEditingController),
                       ),
@@ -150,6 +148,12 @@ class _ChatScreenState extends State<ChatScreen> {
   Future<void> sendMessageToChat(
       {required ModelsProvider modelsProvider,
       required ChatProvider chatProvider}) async {
+    if(textEditingController.text.isEmpty){
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(backgroundColor: Colors.red,content: TextWidget(label:'Please Enter a message' )));
+      return ;
+
+    }
     try {
       setState(() {
         _isTyping = true;
@@ -159,7 +163,7 @@ class _ChatScreenState extends State<ChatScreen> {
         focusNode.unfocus();
       });
 
-     await chatProvider.addChatGPTAsnwers(
+      await chatProvider.addChatGPTAsnwers(
           msg: textEditingController.text,
           chosenModel: modelsProvider.getCurrentModel);
       // chatList.addAll(await ApiServices.sendMessage(
@@ -167,7 +171,8 @@ class _ChatScreenState extends State<ChatScreen> {
       //     msg: textEditingController.text));
       setState(() {});
     } catch (err) {
-      log(err.toString());
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(backgroundColor: Colors.red,content: TextWidget(label: err.toString())));
     } finally {
       setState(() {
         _isTyping = false;
