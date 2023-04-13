@@ -21,27 +21,35 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-   bool _isTyping = false;
+  bool _isTyping = false;
 
   late TextEditingController textEditingController;
+  late FocusNode focusNode;
+  late ScrollController _listScrollController;
 
   @override
   void initState() {
     textEditingController = TextEditingController();
+    focusNode = FocusNode();
+    _listScrollController = ScrollController();
     super.initState();
   }
 
   @override
   void dispose() {
-    textEditingController = TextEditingController();
+    textEditingController.dispose();
+    focusNode.dispose();
+    _listScrollController.dispose();
     super.dispose();
   }
+
+  List<ChatModel> chatList = [];
 
   @override
   Widget build(BuildContext context) {
     final modelsProvider = Provider.of<ModelsProvider>(context);
     return GestureDetector(
-      onTap: (){
+      onTap: () {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
@@ -68,14 +76,14 @@ class _ChatScreenState extends State<ChatScreen> {
             children: [
               Flexible(
                 child: ListView.builder(
+                  controller: _listScrollController,
                   itemBuilder: (context, index) {
                     return ChatWidget(
-                      chatIndex:
-                          int.parse(chatMessages[index]["chatIndex"].toString()),
-                      msg: chatMessages[index]["msg"].toString(),
+                      chatIndex: chatList[index].chatId,
+                      msg: chatList[index].msg,
                     );
                   },
-                  itemCount: chatMessages.length,
+                  itemCount: chatList.length,
                 ),
               ),
               if (_isTyping) ...[
@@ -89,39 +97,31 @@ class _ChatScreenState extends State<ChatScreen> {
                 const SizedBox(
                   height: 10,
                 ),
-
               ],
               Card(
                 elevation: 1,
                 child: Container(
-
                   color: kCardColor,
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Row(children: [
-                      const SizedBox(width: 5,),
+                      const SizedBox(
+                        width: 5,
+                      ),
                       Expanded(
                         child: ChatTextField(
+                            focusNode: focusNode,
+                            onSubmitted: (value) async {
+                              sendMessageToChat(modelsProvider: modelsProvider);
+                              FocusScope.of(context).unfocus();
+                            },
                             textEditingController: textEditingController),
                       ),
                       IconButton(
                           onPressed: () async {
-                            try {
-                              setState(() {
-                                _isTyping = true;
-                              });
-                             // log("request has been sent");
-                            List<ChatModel> list = await ApiServices.sendMessage(
-                                  chatModel: modelsProvider.getCurrentModel,
-                                  msg: textEditingController.text);
-
-                            } catch (err) {
-                              log(err.toString());
-                            }finally{
-                              setState(() {
-                                _isTyping = false;
-                              });
-                            }
+                            await sendMessageToChat(
+                                modelsProvider: modelsProvider);
+                            FocusScope.of(context).unfocus();
                           },
                           icon: const Icon(
                             Icons.send,
@@ -136,5 +136,35 @@ class _ChatScreenState extends State<ChatScreen> {
         ),
       ),
     );
+  }
+
+  void scrollListToEnd() {
+    _listScrollController.animateTo(
+        _listScrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 500), curve: Curves.easeOut);
+  }
+
+  Future<void> sendMessageToChat(
+      {required ModelsProvider modelsProvider}) async {
+    try {
+      setState(() {
+        _isTyping = true;
+        chatList.add(ChatModel(msg: textEditingController.text, chatId: 0));
+        textEditingController.clear();
+        focusNode.unfocus();
+      });
+
+      chatList.addAll(await ApiServices.sendMessage(
+          chatModel: modelsProvider.getCurrentModel,
+          msg: textEditingController.text));
+      setState(() {});
+    } catch (err) {
+      log(err.toString());
+    } finally {
+      setState(() {
+        _isTyping = false;
+        scrollListToEnd();
+      });
+    }
   }
 }

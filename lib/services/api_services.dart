@@ -50,7 +50,7 @@ class ApiServices {
       if (jsonResponse["choices"].length > 0) {
         // log(jsonResponse["choices"][0]["message"]["content"]);
         chatList = List.generate(jsonResponse["choices"].length,
-            (index) => ChatModel(msg: msg, chatId: 1));
+            (index) => ChatModel(msg: jsonResponse["choices"][0]["message"]["content"], chatId: 1));
       }
       return chatList;
     } catch (err) {
