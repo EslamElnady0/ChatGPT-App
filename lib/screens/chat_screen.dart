@@ -148,31 +148,39 @@ class _ChatScreenState extends State<ChatScreen> {
   Future<void> sendMessageToChat(
       {required ModelsProvider modelsProvider,
       required ChatProvider chatProvider}) async {
-    if(textEditingController.text.isEmpty){
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(backgroundColor: Colors.red,content: TextWidget(label:'Please Enter a message' )));
-      return ;
-
+    if (_isTyping) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          backgroundColor: Colors.red,
+          content:
+              TextWidget(label: "You can't send multiple messages at a time")));
+      return;
     }
+    if (textEditingController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          backgroundColor: Colors.red,
+          content: TextWidget(label: 'Please Enter a message')));
+      return;
+    }
+    String msg = textEditingController.text;
     try {
       setState(() {
         _isTyping = true;
-        chatProvider.addUserMessages(msg: textEditingController.text);
+        chatProvider.addUserMessages(msg: msg);
         //chatList.add(ChatModel(msg: textEditingController.text, chatId: 0));
         textEditingController.clear();
         focusNode.unfocus();
       });
 
       await chatProvider.addChatGPTAsnwers(
-          msg: textEditingController.text,
-          chosenModel: modelsProvider.getCurrentModel);
+          msg: msg, chosenModel: modelsProvider.getCurrentModel);
       // chatList.addAll(await ApiServices.sendMessage(
       //     chatModel: modelsProvider.getCurrentModel,
       //     msg: textEditingController.text));
       setState(() {});
     } catch (err) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(backgroundColor: Colors.red,content: TextWidget(label: err.toString())));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          backgroundColor: Colors.red,
+          content: TextWidget(label: err.toString())));
     } finally {
       setState(() {
         _isTyping = false;
